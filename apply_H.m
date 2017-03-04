@@ -48,5 +48,6 @@ function I2 = apply_H(I, H)
 %easy way
 % A=transpose(H);
 % t = maketform('affine',A);
+% % t = maketform('projective',A);
 % I2 = imtransform(I,t);
 end

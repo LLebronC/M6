@@ -15,37 +15,62 @@
 I=imread('Data/0005_s.png'); % we have to be in the proper folder
 
 % ToDo: generate a matrix H which produces a similarity transformation
-theta=pi/4;
-H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
-I2 = apply_H(I, H);
-figure; imshow(I); figure; imshow(uint8(I2));
+% theta=pi/4;
+% H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
+% I2 = apply_H(I, H);
+% figure; imshow(I); figure; imshow(I2);
 
 
 %% 1.2. Affinities
 
 % ToDo: generate a matrix H which produces an affine transformation
 
-I2 = apply_H(I, H);
-figure; imshow(I); figure; imshow(uint8(I2));
+theta=pi/4;
+H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
+% I2 = apply_H(I, H);
+% figure; imshow(I); figure; imshow(I2);
 
 % ToDo: decompose the affinity in four transformations: two
 % rotations, a scale, and a translation
-
+[U,D,V] = svd(H(1:2,1:2));
+Ro=U*V';
+Rphi=V';
+Rnphi=V;
+transalation=[1 0 H(1,3);
+              0 1 H(2,3);
+              0  0  1];
 % ToDo: verify that the product of the four previous transformations
 % produces the same matrix H as above
-
+% A=Ro*Rnphi*D*Rphi;
+% 'H==A'
+% H(1:2,1:2)-A
 % ToDo: verify that the proper sequence of the four previous
 % transformations over the image I produces the same image I2 as before
+IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
+                  Rphi(2,1) Rphi(2,2) 0;
+                  0  0 1] );
+ID = apply_H(IR1, [D(1,1) 0 0;
+                  0 D(2,2) 0;
+                  0  0 1]);
+IR2 = apply_H(ID, [Rnphi(1,1) Rnphi(1,2) 0;
+                  Rnphi(2,1) Rnphi(2,2) 0;
+                  0  0 1]);
+IR3 = apply_H(IR2, [Ro(1,1) Ro(1,2) 0;
+                  Ro(2,1) Ro(2,2) 0;
+                  0  0 1]);
+IT = apply_H(IR3, transalation);
+figure; imshow(I); figure; imshow(IR3);
 
-
-
+return
 %% 1.3 Projective transformations (homographies)
 
 % ToDo: generate a matrix H which produces a projective transformation
-
-I2 = apply_H(I, H);
-figure; imshow(I); figure; imshow(uint8(I2));
-
+% H=[ 0.9638   -0.0960   52.5754;
+%  0.2449    1.3808  -17.0081;
+% -0.0001    0.0013    1.0000];
+% I2 = apply_H(I, H);
+% figure; imshow(I); figure; imshow(I2);
+% return
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine Rectification
 
