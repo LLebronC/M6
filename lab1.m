@@ -153,6 +153,19 @@ alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr
 %       Compute also the angles between the pair of lines before and after
 %       rectification.
 
+% necesitamos sacar A, la K obtenida con cholesky
+% s = 2x2 symmetric matrix; s = A*At = [[s1 s2];[s3 s4]]
+% [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*(s1 s2 s3)=0:
+% m = 3x3 matrix, [[s(1,1), s(1,2), 0];[s(2,1), s(2,2), 0];[0,0,0]]
+% dot(m*l1, l3) = 0
+
+%COMO SACAMOS s1, s2 y s3?
+
+S = [[s1, s2];[s2, s3]];
+K = chol(S, 'upper');
+H = [[K(1,1) K(1,2) 0];[K(1,1) K(1,2) 0];[0 0 1]];
+I2 = apply_H(I, H);
+figure;imshow(uint8(I2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 4. OPTIONAL: Metric Rectification in a single step
 % Use 5 pairs of orthogonal lines (pages 55-57, Hartley-Zisserman book)
