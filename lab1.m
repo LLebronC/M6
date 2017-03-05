@@ -115,19 +115,32 @@ plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
 v1 = cross(l1,l2);
 v2 = cross(l3,l4);
 l = cross(v1,v2);
-Ha = [1 0 0; 0 1 0; l(1, 1)/l(3,1) l(2, 1)/l(3,1) 1];
+
+Ha = [1 0 0; 0 1 0; l(1, 1)/l(3,1) l(2, 1)/l(3,1) l(3,1)/l(3,1)];
 
 I2 = apply_H(I, Ha);
-figure; imshow(uint8(I2))
-
-
-omega = [[1 0 0];[0 1 0];[0 0 0]];
-alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
-
-% I2 = apply_H(I, Ha);
-% figure; imshow(uint8(I2));
 
 % ToDo: compute the transformed lines lr1, lr2, lr3, lr4
+pr1 = Ha*p1;
+pr2 = Ha*p2;
+pr3 = Ha*p3;
+pr4 = Ha*p4;
+pr5 = Ha*p5;
+pr6 = Ha*p6;
+pr7 = Ha*p7;
+pr8 = Ha*p8;
+
+lr1 = cross(pr1,pr2);
+lr2 = cross(pr3,pr4);
+lr3 = cross(pr5,pr6);
+lr4 = cross(pr7,pr8);
+
+
+% imagino que esto se ha de hacer de la siguiente manera, no como antes
+% lr1 = Ha*l1;
+% lr2 = Ha*l2;
+% lr3 = Ha*l3;
+% lr4 = Ha*l4;
 
 % show the transformed lines in the transformed image
 figure;imshow(uint8(I2));
@@ -140,8 +153,15 @@ plot(t, -(lr4(1)*t + lr4(3)) / lr4(2), 'y');
 
 % ToDo: to evaluate the results, compute the angle between the different pair 
 % of lines before and after the image transformation
+omega = [[1 0 0];[0 1 0];[0 0 0]];
 
+%cos(alhpa) != 0
+alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
 
+%cos(alphar) == 0
+alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr3)))); 
+
+a=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 3. Metric Rectification
 
