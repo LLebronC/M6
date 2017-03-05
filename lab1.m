@@ -1,77 +1,78 @@
+close all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lab 1: Image rectification
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 1. Applying image transformations
-
-% ToDo: create the function  "apply_H" that gets as input a homography and
-% an image and returns the image transformed by the homography.
-% At some point you will need to interpolate the image values at some points,
-% you may use the Matlab function "interp2" for that.
-
-
-%% 1.1. Similarities
-I=imread('Data/0005_s.png'); % we have to be in the proper folder
-
-% ToDo: generate a matrix H which produces a similarity transformation
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% 1. Applying image transformations
+% 
+% % ToDo: create the function  "apply_H" that gets as input a homography and
+% % an image and returns the image transformed by the homography.
+% % At some point you will need to interpolate the image values at some points,
+% % you may use the Matlab function "interp2" for that.
+% 
+% 
+% %% 1.1. Similarities
+% I=imread('Data/0005_s.png'); % we have to be in the proper folder
+% 
+% % ToDo: generate a matrix H which produces a similarity transformation
+% % theta=pi/4;
+% % H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
+% % I2 = apply_H(I, H);
+% % figure; imshow(I); figure; imshow(I2);
+% 
+% 
+% %% 1.2. Affinities
+% 
+% % ToDo: generate a matrix H which produces an affine transformation
+% 
 % theta=pi/4;
 % H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
-% I2 = apply_H(I, H);
-% figure; imshow(I); figure; imshow(I2);
-
-
-%% 1.2. Affinities
-
-% ToDo: generate a matrix H which produces an affine transformation
-
-theta=pi/4;
-H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
-% I2 = apply_H(I, H);
-% figure; imshow(I); figure; imshow(I2);
-
-% ToDo: decompose the affinity in four transformations: two
-% rotations, a scale, and a translation
-[U,D,V] = svd(H(1:2,1:2));
-Ro=U*V';
-Rphi=V';
-Rnphi=V;
-transalation=[1 0 H(1,3);
-              0 1 H(2,3);
-              0  0  1];
-% ToDo: verify that the product of the four previous transformations
-% produces the same matrix H as above
-% A=Ro*Rnphi*D*Rphi;
-% 'H==A'
-% H(1:2,1:2)-A
-% ToDo: verify that the proper sequence of the four previous
-% transformations over the image I produces the same image I2 as before
-IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
-                  Rphi(2,1) Rphi(2,2) 0;
-                  0  0 1] );
-ID = apply_H(IR1, [D(1,1) 0 0;
-                  0 D(2,2) 0;
-                  0  0 1]);
-IR2 = apply_H(ID, [Rnphi(1,1) Rnphi(1,2) 0;
-                  Rnphi(2,1) Rnphi(2,2) 0;
-                  0  0 1]);
-IR3 = apply_H(IR2, [Ro(1,1) Ro(1,2) 0;
-                  Ro(2,1) Ro(2,2) 0;
-                  0  0 1]);
-IT = apply_H(IR3, transalation);
-figure; imshow(I); figure; imshow(IR3);
-
-return
-%% 1.3 Projective transformations (homographies)
-
-% ToDo: generate a matrix H which produces a projective transformation
-% H=[ 0.9638   -0.0960   52.5754;
-%  0.2449    1.3808  -17.0081;
-% -0.0001    0.0013    1.0000];
-% I2 = apply_H(I, H);
-% figure; imshow(I); figure; imshow(I2);
+% % I2 = apply_H(I, H);
+% % figure; imshow(I); figure; imshow(I2);
+% 
+% % ToDo: decompose the affinity in four transformations: two
+% % rotations, a scale, and a translation
+% [U,D,V] = svd(H(1:2,1:2));
+% Ro=U*V';
+% Rphi=V';
+% Rnphi=V;
+% transalation=[1 0 H(1,3);
+%               0 1 H(2,3);
+%               0  0  1];
+% % ToDo: verify that the product of the four previous transformations
+% % produces the same matrix H as above
+% % A=Ro*Rnphi*D*Rphi;
+% % 'H==A'
+% % H(1:2,1:2)-A
+% % ToDo: verify that the proper sequence of the four previous
+% % transformations over the image I produces the same image I2 as before
+% IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
+%                   Rphi(2,1) Rphi(2,2) 0;
+%                   0  0 1] );
+% ID = apply_H(IR1, [D(1,1) 0 0;
+%                   0 D(2,2) 0;
+%                   0  0 1]);
+% IR2 = apply_H(ID, [Rnphi(1,1) Rnphi(1,2) 0;
+%                   Rnphi(2,1) Rnphi(2,2) 0;
+%                   0  0 1]);
+% IR3 = apply_H(IR2, [Ro(1,1) Ro(1,2) 0;
+%                   Ro(2,1) Ro(2,2) 0;
+%                   0  0 1]);
+% IT = apply_H(IR3, transalation);
+% figure; imshow(I); figure; imshow(IR3);
+% 
 % return
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% 1.3 Projective transformations (homographies)
+% 
+% % ToDo: generate a matrix H which produces a projective transformation
+% % H=[ 0.9638   -0.0960   52.5754;
+% %  0.2449    1.3808  -17.0081;
+% % -0.0001    0.0013    1.0000];
+% % I2 = apply_H(I, H);
+% % figure; imshow(I); figure; imshow(I2);
+% % return
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine Rectification
 
 
@@ -95,6 +96,10 @@ p8 = [A(i,3) A(i,4) 1]';
 
 % ToDo: compute the lines l1, l2, l3, l4, that pass through the different pairs of points
 
+l1 = cross(p1,p2);
+l2 = cross(p3,p4);
+l3 = cross(p5,p6);
+l4 = cross(p7,p8);
 
 % show the chosen lines in the image
 figure;imshow(I);
@@ -107,8 +112,20 @@ plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
 
 % ToDo: compute the homography that affinely rectifies the image
 
-I2 = apply_H(I, H);
-figure; imshow(uint8(I2));
+v1 = cross(l1,l2);
+v2 = cross(l3,l4);
+l = cross(v1,v2);
+Ha = [1 0 0; 0 1 0; l(1, 1)/l(3,1) l(2, 1)/l(3,1) 1];
+
+I2 = apply_H(I, Ha);
+figure; imshow(uint8(I2))
+
+
+omega = [[1 0 0];[0 1 0];[0 0 0]];
+alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
+
+% I2 = apply_H(I, Ha);
+% figure; imshow(uint8(I2));
 
 % ToDo: compute the transformed lines lr1, lr2, lr3, lr4
 

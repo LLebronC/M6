@@ -45,6 +45,8 @@ function I2 = apply_H(I, H)
             end
         end
     end
+    
+    I2 = I2*255;
 %easy way
 % A=transpose(H);
 % t = maketform('affine',A);
