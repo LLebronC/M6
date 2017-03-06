@@ -34,6 +34,8 @@ close all
 % % ToDo: decompose the affinity in four transformations: two
 % % rotations, a scale, and a translation
 % [U,D,V] = svd(H(1:2,1:2));
+% % % siguiendo la formula en lecture1 pag.31, 2 rot. Rphi y Ro, una
+% translacion translation y un escalar D
 % Ro=U*V';
 % Rphi=V';
 % Rnphi=V;
@@ -47,6 +49,7 @@ close all
 % % H(1:2,1:2)-A
 % % ToDo: verify that the proper sequence of the four previous
 % % transformations over the image I produces the same image I2 as before
+% % % % seguir el order aplicando trnasformaciones de derecha a izquierda
 % IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
 %                   Rphi(2,1) Rphi(2,2) 0;
 %                   0  0 1] );
@@ -66,12 +69,13 @@ close all
 % %% 1.3 Projective transformations (homographies)
 % 
 % % ToDo: generate a matrix H which produces a projective transformation
-% % H=[ 0.9638   -0.0960   52.5754;
-% %  0.2449    1.3808  -17.0081;
-% % -0.0001    0.0013    1.0000];
-% % I2 = apply_H(I, H);
-% % figure; imshow(I); figure; imshow(I2);
-% % return
+% % % % Random H
+% H=[ 0.9638   -0.0960   52.5754;
+%  0.2449    1.3808  -17.0081;
+% -0.0001    0.0013    1.0000];
+% I2 = apply_H(I, H);
+% figure; imshow(I); figure; imshow(I2);
+% return
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine Rectification
 
@@ -101,13 +105,13 @@ l3 = cross(p5,p6);
 l4 = cross(p7,p8);
 
 % show the chosen lines in the image
-figure;imshow(I);
-hold on;
-t=1:0.1:1000;
-plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
-plot(t, -(l2(1)*t + l2(3)) / l2(2), 'y');
-plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
-plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
+% figure;imshow(I);
+% hold on;
+% t=1:0.1:1000;
+% plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+% plot(t, -(l2(1)*t + l2(3)) / l2(2), 'y');
+% plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+% plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
 
 % ToDo: compute the homography that affinely rectifies the image
 Ha = get_affine_rect(l1, l2, l3, l4);
@@ -120,20 +124,20 @@ lr3 = inv(transpose(Ha))*l3;
 lr4 = inv(transpose(Ha))*l4;
 
 % show the transformed lines in the transformed image
-figure;imshow(uint8(I2));
-hold on;
-t=1:0.1:1000;
-plot(t, -(lr1(1)*t + lr1(3)) / lr1(2), 'y');
-plot(t, -(lr2(1)*t + lr2(3)) / lr2(2), 'y');
-plot(t, -(lr3(1)*t + lr3(3)) / lr3(2), 'y');
-plot(t, -(lr4(1)*t + lr4(3)) / lr4(2), 'y');
+% figure;imshow(uint8(I2));
+% hold on;
+% t=1:0.1:1000;
+% plot(t, -(lr1(1)*t + lr1(3)) / lr1(2), 'y');
+% plot(t, -(lr2(1)*t + lr2(3)) / lr2(2), 'y');
+% plot(t, -(lr3(1)*t + lr3(3)) / lr3(2), 'y');
+% plot(t, -(lr4(1)*t + lr4(3)) / lr4(2), 'y');
 
 % ToDo: to evaluate the results, compute the angle between the different pair 
 % of lines before and after the image transformation
-omega = [[1 0 0];[0 1 0];[0 0 0]];
-
-alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
-alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr3)))); 
+% omega = [[1 0 0];[0 1 0];[0 0 0]];
+% 
+% alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
+% alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr3)))); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 3. Metric Rectification
@@ -146,24 +150,35 @@ alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr
 %       Compute also the angles between the pair of lines before and after
 %       rectification.
 
-% necesitamos sacar A, la K obtenida con cholesky
-% s = 2x2 symmetric matrix; s = A*At = [[s1 s2];[s2 s3]]
-% [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*(s1 s2 s3)=0:
-% [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1), l2(2)*l4(2)]*(s1 s2 s3)=0:
-% m = 3x3 matrix, [[s(1,1), s(1,2), 0];[s(2,1), s(2,2), 0];[0,0,0]]
-% dot(m*l1, l3) = 0
 
-%COMO SACAMOS s1, s2 y s3?
-%eq1 = [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*[s1 s2 s3];
-%eq2 = [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1), l2(2)*l4(2)]*[s1 s2 s3];
 
-Hs = get_metric_rect(lr1, lr3, lr2, lr4);
+i = 227;
+p9 = [A(i,1) A(i,2) 1]';
+p12 = [A(i,3) A(i,4) 1]';
+i = 367;
+p10 = [A(i,1) A(i,2) 1]';
+p11 = [A(i,3) A(i,4) 1]';
+% % % No paralel
+l5= cross(p9,p10);
+l6= cross(p11,p12);
+lr5 = inv(transpose(Ha))*l5;
+lr6 = inv(transpose(Ha))*l6;
+
+% figure;imshow(I);
+% hold on;
+% t=1:0.1:1000;
+% plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+% plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+% plot(t, -(l5(1)*t + l5(3)) / l5(2), 'y');
+% plot(t, -(l6(1)*t + l6(3)) / l6(2), 'y');
+
+Hs = get_metric_rect(lr1, lr3, lr5, lr6);
 I3 = apply_H(uint8(I2), Hs);
 
 lrr1 = inv(transpose(Hs))*lr1;
 lrr2 = inv(transpose(Hs))*lr2;
-lrr3 = inv(transpose(Hs))*lr3;
-lrr4 = inv(transpose(Hs))*lr4;
+lrr5 = inv(transpose(Hs))*lr5;
+lrr6 = inv(transpose(Hs))*lr6;
 
 % show the transformed lines in the transformed image
 figure;imshow(uint8(I3));
@@ -174,7 +189,8 @@ plot(t, -(lrr2(1)*t + lrr2(3)) / lrr2(2), 'y');
 plot(t, -(lrr3(1)*t + lrr3(3)) / lrr3(2), 'y');
 plot(t, -(lrr4(1)*t + lrr4(3)) / lrr4(2), 'y');
 
-alpharr = acos(dot(omega*lrr1,lrr3)/(sqrt(dot(omega*lrr1,lrr1))*sqrt(dot(omega*lrr3,lrr3)))); 
+alpharr = acos(dot(omega*lrr1,lrr3)/(sqrt(dot(omega*lrr1,lrr1))*sqrt(dot(omega*lrr3,lrr3))))
+return
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 4. OPTIONAL: Metric Rectification in a single step
 % Use 5 pairs of orthogonal lines (pages 55-57, Hartley-Zisserman book)
