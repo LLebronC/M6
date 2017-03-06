@@ -154,16 +154,56 @@ alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr
 %       rectification.
 
 % necesitamos sacar A, la K obtenida con cholesky
-% s = 2x2 symmetric matrix; s = A*At = [[s1 s2];[s3 s4]]
+% s = 2x2 symmetric matrix; s = A*At = [[s1 s2];[s2 s3]]
 % [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*(s1 s2 s3)=0:
+% [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1), l2(2)*l4(2)]*(s1 s2 s3)=0:
 % m = 3x3 matrix, [[s(1,1), s(1,2), 0];[s(2,1), s(2,2), 0];[0,0,0]]
 % dot(m*l1, l3) = 0
 
 %COMO SACAMOS s1, s2 y s3?
+%eq1 = [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*[s1 s2 s3];
+%eq2 = [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1), l2(2)*l4(2)]*[s1 s2 s3];
 
-S = [[s1, s2];[s2, s3]];
-K = chol(S, 'upper');
-H = [[K(1,1) K(1,2) 0];[K(1,1) K(1,2) 0];[0 0 1]];
+
+A = [[l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1)]; [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1)]];
+B = [[-l1(2)*l3(2)];[-l2(2)*l4(2)]];
+
+
+% [U,S,V]=svd(A);
+% x = V*(S\(U'*B));
+% %x = A\B;
+
+
+x = A\B;
+
+S = eye(2);
+S(1,1) = x(1);
+S(1,2) = x(2);
+S(2,1) = x(2);
+
+%S = [[x(1), x(2)];[x(2), 1]];
+% K = chol(S);
+% H = [[K(1,1) K(1,2) 0];[K(1,1) K(1,2) 0];[0 0 1]];
+
+[U,D,V] = svd(S);
+sqrtD = sqrt(D);
+U_T = transpose(U);
+A = U_T*sqrtD;
+A = A*V;
+H2 = eye(3);
+H2(1,1) = A(1,1);
+H2(1,2) = A(1,2);
+H2(2,1) = A(2,1);
+H2(2,2) = A(2,2);
+if H2(1,1) < 0
+    H2(1,1) = -H2(1,1);
+
+elseif H2(2,2) < 0
+    H2(2,2) = -H2(2,2);
+end
+H = H2';
+
+
 I2 = apply_H(I, H);
 figure;imshow(uint8(I2));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
