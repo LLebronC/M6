@@ -95,7 +95,6 @@ p7 = [A(i,1) A(i,2) 1]';
 p8 = [A(i,3) A(i,4) 1]';
 
 % ToDo: compute the lines l1, l2, l3, l4, that pass through the different pairs of points
-
 l1 = cross(p1,p2);
 l2 = cross(p3,p4);
 l3 = cross(p5,p6);
@@ -111,13 +110,7 @@ plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
 plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
 
 % ToDo: compute the homography that affinely rectifies the image
-
-v1 = cross(l1,l2);
-v2 = cross(l3,l4);
-l = cross(v1,v2);
-
-Ha = [1 0 0; 0 1 0; l(1)/l(3) l(2)/l(3) l(3)/l(3)];
-
+Ha = get_affine_rect(l1, l2, l3, l4);
 I2 = apply_H(I, Ha);
 
 % ToDo: compute the transformed lines lr1, lr2, lr3, lr4
@@ -164,48 +157,24 @@ alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr
 %eq1 = [l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1), l1(2)*l3(2)]*[s1 s2 s3];
 %eq2 = [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1), l2(2)*l4(2)]*[s1 s2 s3];
 
+Hs = get_metric_rect(lr1, lr3, lr2, lr4);
+I3 = apply_H(uint8(I2), Hs);
 
-A = [[l1(1)*l3(1), l1(1)*l3(2)+l1(2)*l3(1)]; [l2(1)*l4(1), l2(1)*l4(2)+l2(2)*l4(1)]];
-B = [[-l1(2)*l3(2)];[-l2(2)*l4(2)]];
+lrr1 = inv(transpose(Hs))*lr1;
+lrr2 = inv(transpose(Hs))*lr2;
+lrr3 = inv(transpose(Hs))*lr3;
+lrr4 = inv(transpose(Hs))*lr4;
 
+% show the transformed lines in the transformed image
+figure;imshow(uint8(I3));
+hold on;
+t=1:0.1:1000;
+plot(t, -(lrr1(1)*t + lrr1(3)) / lrr1(2), 'y');
+plot(t, -(lrr2(1)*t + lrr2(3)) / lrr2(2), 'y');
+plot(t, -(lrr3(1)*t + lrr3(3)) / lrr3(2), 'y');
+plot(t, -(lrr4(1)*t + lrr4(3)) / lrr4(2), 'y');
 
-% [U,S,V]=svd(A);
-% x = V*(S\(U'*B));
-% %x = A\B;
-
-
-x = A\B;
-
-S = eye(2);
-S(1,1) = x(1);
-S(1,2) = x(2);
-S(2,1) = x(2);
-
-%S = [[x(1), x(2)];[x(2), 1]];
-% K = chol(S);
-% H = [[K(1,1) K(1,2) 0];[K(1,1) K(1,2) 0];[0 0 1]];
-
-[U,D,V] = svd(S);
-sqrtD = sqrt(D);
-U_T = transpose(U);
-A = U_T*sqrtD;
-A = A*V;
-H2 = eye(3);
-H2(1,1) = A(1,1);
-H2(1,2) = A(1,2);
-H2(2,1) = A(2,1);
-H2(2,2) = A(2,2);
-if H2(1,1) < 0
-    H2(1,1) = -H2(1,1);
-
-elseif H2(2,2) < 0
-    H2(2,2) = -H2(2,2);
-end
-H = H2';
-
-
-I2 = apply_H(I, H);
-figure;imshow(uint8(I2));
+alpharr = acos(dot(omega*lrr1,lrr3)/(sqrt(dot(omega*lrr1,lrr1))*sqrt(dot(omega*lrr3,lrr3)))); 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 4. OPTIONAL: Metric Rectification in a single step
 % Use 5 pairs of orthogonal lines (pages 55-57, Hartley-Zisserman book)
