@@ -178,7 +178,49 @@ alpharr = acos(dot(omega*lrr1,lrr3)/(sqrt(dot(omega*lrr1,lrr1))*sqrt(dot(omega*l
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 4. OPTIONAL: Metric Rectification in a single step
 % Use 5 pairs of orthogonal lines (pages 55-57, Hartley-Zisserman book)
+i = 227;
+p9 = [A(i,1) A(i,2) 1]';
+p10 = [A(i,3) A(i,4) 1]';
+i = 367;
+p11 = [A(i,1) A(i,2) 1]';
+p12 = [A(i,3) A(i,4) 1]';
+i = 534;
+p13 = [A(i,1) A(i,2) 1]';
+p14 = [A(i,3) A(i,4) 1]';
+i = 576;
+p15 = [A(i,1) A(i,2) 1]';
+p16 = [A(i,3) A(i,4) 1]';
+i = 341;
+p17 = [A(i,1) A(i,2) 1]';
+p18 = [A(i,3) A(i,4) 1]';
+i = 404;
+p19 = [A(i,1) A(i,2) 1]';
+p20 = [A(i,3) A(i,4) 1]';
 
+l1 = l1;
+m1 = l2;
+l2 = l3;
+m2 = l4;
+l3 = cross(p9,p10);
+m3 = cross(p11,p12);
+l4 = cross(p13,p14);
+m4 = cross(p15,p16);
+l5 = cross(p17,p18);
+m5 = cross(p19,p20);
+
+A = [
+[l1(1)*m1(1), (l1(1)*m1(2)+l1(2)*m1(1))/2, l1(2)*m1(2), (l1(1)*m1(3)+l1(3)*m1(1))/2, (l1(2)*m1(3)+l1(3)*m1(2))/2, l1(3)*m1(3)];
+[l2(1)*m2(1), (l2(1)*m2(2)+l2(2)*m2(1))/2, l2(2)*m2(2), (l2(1)*m2(3)+l2(3)*m2(1))/2, (l2(2)*m2(3)+l2(3)*m2(2))/2, l2(3)*m2(3)];
+[l3(1)*m3(1), (l3(1)*m3(2)+l3(2)*m3(1))/2, l3(2)*m3(2), (l3(1)*m3(3)+l3(3)*m3(1))/2, (l3(2)*m3(3)+l3(3)*m3(2))/2, l3(3)*m3(3)];
+[l4(1)*m4(1), (l4(1)*m4(2)+l4(2)*m4(1))/2, l4(2)*m4(2), (l4(1)*m4(3)+l4(3)*m4(1))/2, (l4(2)*m4(3)+l4(3)*m4(2))/2, l4(3)*m4(3)];
+[l5(1)*m5(1), (l5(1)*m5(2)+l5(2)*m5(1))/2, l5(2)*m5(2), (l5(1)*m5(3)+l5(3)*m5(1))/2, (l5(2)*m5(3)+l5(3)*m5(2))/2, l5(3)*m5(3)]
+];
+
+[U D V] = svd(A);
+H = U*D;
+
+I4 = apply_H(uint8(I), H);
+figure;imshow(uint8(I4));
 %% 5. OPTIONAL: Affine Rectification of the left facade of image 0000
 
 %% 6. OPTIONAL: Metric Rectification of the left facade of image 0000
