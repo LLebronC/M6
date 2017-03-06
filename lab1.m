@@ -217,6 +217,19 @@ A = [
 ];
 
 [U D V] = svd(A);
+x = V(:,6);
+
+a = x(1);
+b = x(2);
+c = x(3);
+d = x(4);
+e = x(5);
+f = x(6);
+
+C = [[a b/2 d/2]; [b/2 c e/2]; [d/2 e/2 f]];
+
+[U D V] = svd(C);
+
 H = U*D;
 
 I4 = apply_H(uint8(I), H);
