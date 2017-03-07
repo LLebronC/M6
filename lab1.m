@@ -208,6 +208,104 @@ one_step('Data/0000_s.png', 'Data/0000_s_info_lines.txt');
 
 %% 7. OPTIONAL: Affine Rectification of the left facade of image 0001
 
+% choose the image points
+I=imread('Data/0001_s.png');
+A = load('Data/0001_s_info_lines.txt');
+
+% indices of lines
+i = 614;
+p1 = [A(i,1) A(i,2) 1]';
+p2 = [A(i,3) A(i,4) 1]';
+i = 159;
+p3 = [A(i,1) A(i,2) 1]';
+p4 = [A(i,3) A(i,4) 1]';
+i = 645;
+p5 = [A(i,1) A(i,2) 1]';
+p6 = [A(i,3) A(i,4) 1]';
+i = 541;
+p7 = [A(i,1) A(i,2) 1]';
+p8 = [A(i,3) A(i,4) 1]';
+
+% ToDo: compute the lines l1, l2, l3, l4, that pass through the different pairs of points
+l1 = cross(p1,p2);
+l2 = cross(p3,p4);
+l3 = cross(p5,p6);
+l4 = cross(p7,p8);
+
+% show the chosen lines in the image
+figure;imshow(I);
+hold on;
+t=1:0.1:1000;
+plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+plot(t, -(l2(1)*t + l2(3)) / l2(2), 'y');
+plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
+
+% ToDo: compute the homography that affinely rectifies the image
+Ha = get_affine_rect(l1, l2, l3, l4);
+I2 = apply_H(I, Ha);
+
+% ToDo: compute the transformed lines lr1, lr2, lr3, lr4
+lr1 = inv(transpose(Ha))*l1;
+lr2 = inv(transpose(Ha))*l2;
+lr3 = inv(transpose(Ha))*l3;
+lr4 = inv(transpose(Ha))*l4;
+
+% show the transformed lines in the transformed image
+figure;imshow(uint8(I2));
+hold on;
+t=1:0.1:1000;
+plot(t, -(lr1(1)*t + lr1(3)) / lr1(2), 'y');
+plot(t, -(lr2(1)*t + lr2(3)) / lr2(2), 'y');
+plot(t, -(lr3(1)*t + lr3(3)) / lr3(2), 'y');
+plot(t, -(lr4(1)*t + lr4(3)) / lr4(2), 'y');
+
+% ToDo: to evaluate the results, compute the angle between the different pair 
+% of lines before and after the image transformation
+omega = [[1 0 0];[0 1 0];[0 0 0]];
+% 
+alpha = acos(dot(omega*l1,l3)/(sqrt(dot(omega*l1,l1))*sqrt(dot(omega*l3,l3)))); 
+alphar = acos(dot(omega*lr1,lr3)/(sqrt(dot(omega*lr1,lr1))*sqrt(dot(omega*lr3,lr3)))); 
+
+
 %% 8. OPTIONAL: Metric Rectification of the left facade of image 0001
 
+i = 188;
+p9 = [A(i,1) A(i,2) 1]';
+p12 = [A(i,3) A(i,4) 1]';
+i = 159;
+p10 = [A(i,1) A(i,2) 1]';
+p11 = [A(i,3) A(i,4) 1]';
+% % % No paralel
+l5= cross(p9,p10);
+l6= cross(p11,p12);
+lr5 = inv(transpose(Ha))*l5;
+lr6 = inv(transpose(Ha))*l6;
+
+figure;imshow(I);
+hold on;
+t=1:0.1:1000;
+plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+plot(t, -(l5(1)*t + l5(3)) / l5(2), 'y');
+plot(t, -(l6(1)*t + l6(3)) / l6(2), 'y');
+
+Hs = get_metric_rect(lr6, lr5, lr3, lr1);
+I3 = apply_H(uint8(I2), Hs);
+
+lrr1 = inv(transpose(Hs))*lr1;
+lrr2 = inv(transpose(Hs))*lr2;
+lrr3 = inv(transpose(Hs))*lr5;
+lrr4 = inv(transpose(Hs))*lr6;
+
+% show the transformed lines in the transformed image
+figure;imshow(uint8(I3));
+hold on;
+t=1:0.1:1000;
+plot(t, -(lrr1(1)*t + lrr1(3)) / lrr1(2), 'y');
+plot(t, -(lrr2(1)*t + lrr2(3)) / lrr2(2), 'y');
+plot(t, -(lrr3(1)*t + lrr3(3)) / lrr3(2), 'y');
+plot(t, -(lrr4(1)*t + lrr4(3)) / lrr4(2), 'y');
+
+alpharr = acos(dot(omega*lrr3,lrr4)/(sqrt(dot(omega*lrr3,lrr3))*sqrt(dot(omega*lrr4,lrr4))))
 
