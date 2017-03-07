@@ -1,3 +1,9 @@
+% % % % Hay comentado dos metodos mas para hacer estas transformaciones a
+% toda la imagem, el primero produce de input a output pero hace que output
+% tenga "agujeros" en la imagen, el siguiente que es el que usamos por
+% defecto produce the output a input con lo que output no tiene partes que
+% le falten, y el ultimo es un ejemplo de como usar las funciones de matlab
+% propias para esto siendo estas bastante mas rapidas que nuestro metodo.
 function I2 = apply_H(I, H)
 
 %in->out

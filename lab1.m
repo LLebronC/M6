@@ -17,22 +17,17 @@ I=imread('Data/0005_s.png'); % we have to be in the proper folder
 
 % ToDo: generate a matrix H which produces a similarity transformation
 theta=pi/4;
-s = 1.25;
-t1 = 10;
-t2 = 20;
-%H = apply_similarity(I, theta, s, t1, t2);
-
+H=[[cos(theta) -sin(theta) 10];[sin(theta) cos(theta) 20];[0 0 1]];
+figure; imshow(I); figure; imshow(I2);
 %% 1.2. Affinities
 
 % ToDo: generate a matrix H which produces an affine transformation
 theta=pi/7;
-phi=pi/5;
-s1 = 1.25;
-s2 = 0.75;
-t1 = 10;
-t2 = 20;
 
-%H = apply_affinity(I, theta, phi, s1, s2, t1, t2);
+H=[[2*cos(theta) -sin(theta) 10];[sin(theta) -2*cos(theta) 20];[0 0 1]];
+I2 = apply_H(I, H);
+figure; imshow(I); figure; imshow(I2);
+
 
 % ToDo: decompose the affinity in four transformations: two
 % rotations, a scale, and a translation
@@ -46,27 +41,27 @@ transalation=[1 0 H(1,3);
               0  0  1];
 % ToDo: verify that the product of the four previous transformations
 % produces the same matrix H as above
-% A=Ro*Rnphi*D*Rphi;
-% 'H==A'
-% H(1:2,1:2)-A
+A=Ro*Rnphi*D*Rphi;
+'H==A'
+H(1:2,1:2)-A % los valores son cercanos a 0, posible error de decimales
 % ToDo: verify that the proper sequence of the four previous
 % transformations over the image I produces the same image I2 as before
 % % % seguir el order aplicando trnasformaciones de derecha a izquierda
 
-% IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
-%                   Rphi(2,1) Rphi(2,2) 0;
-%                   0  0 1] );
-% ID = apply_H(IR1, [D(1,1) 0 0;
-%                   0 D(2,2) 0;
-%                   0  0 1]);
-% IR2 = apply_H(ID, [Rnphi(1,1) Rnphi(1,2) 0;
-%                   Rnphi(2,1) Rnphi(2,2) 0;
-%                   0  0 1]);
-% IR3 = apply_H(IR2, [Ro(1,1) Ro(1,2) 0;
-%                   Ro(2,1) Ro(2,2) 0;
-%                   0  0 1]);
-% IT = apply_H(IR3, transalation);
-% figure; imshow(I); figure; imshow(IR3);
+IR1 = apply_H(I, [Rphi(1,1) Rphi(1,2) 0;
+                  Rphi(2,1) Rphi(2,2) 0;
+                  0  0 1] );
+ID = apply_H(IR1, [D(1,1) 0 0;
+                  0 D(2,2) 0;
+                  0  0 1]);
+IR2 = apply_H(ID, [Rnphi(1,1) Rnphi(1,2) 0;
+                  Rnphi(2,1) Rnphi(2,2) 0;
+                  0  0 1]);
+IR3 = apply_H(IR2, [Ro(1,1) Ro(1,2) 0;
+                  Ro(2,1) Ro(2,2) 0;
+                  0  0 1]);
+IT = apply_H(IR3, transalation);
+figure; imshow(I); figure; imshow(IR3);
 
 
 %% 1.3 Projective transformations (homographies)
@@ -76,14 +71,12 @@ transalation=[1 0 H(1,3);
 H=[ 0.9638   -0.0960   52.5754;
  0.2449    1.3808  -17.0081;
 -0.0001    0.0013    1.0000];
-%I2 = apply_H(I, H);
-%figure; imshow(I); figure; imshow(I2);
+I2 = apply_H(I, H);
+figure; imshow(I); figure; imshow(I2);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 2. Affine Rectification
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 2. Affine Rectification
 
-
-% choose the image points
 I=imread('Data/0000_s.png');
 A = load('Data/0000_s_info_lines.txt');
 
@@ -108,17 +101,17 @@ l3 = cross(p5,p6);
 l4 = cross(p7,p8);
 
 % show the chosen lines in the image
-% figure;imshow(I);
-% hold on;
-% t=1:0.1:1000;
-% plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
-% plot(t, -(l2(1)*t + l2(3)) / l2(2), 'y');
-% plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
-% plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
+figure;imshow(I);
+hold on;
+t=1:0.1:1000;
+plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+plot(t, -(l2(1)*t + l2(3)) / l2(2), 'y');
+plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+plot(t, -(l4(1)*t + l4(3)) / l4(2), 'y');
 
 % ToDo: compute the homography that affinely rectifies the image
 Ha = get_affine_rect(l1, l2, l3, l4);
-I2 = apply_H2(I, Ha);
+I2 = apply_H(I, Ha);
 
 % ToDo: compute the transformed lines lr1, lr2, lr3, lr4
 lr1 = inv(transpose(Ha))*l1;
@@ -167,16 +160,16 @@ l6= cross(p11,p12);
 lr5 = inv(transpose(Ha))*l5;
 lr6 = inv(transpose(Ha))*l6;
 
-% figure;imshow(I);
-% hold on;
-% t=1:0.1:1000;
-% plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
-% plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
-% plot(t, -(l5(1)*t + l5(3)) / l5(2), 'y');
-% plot(t, -(l6(1)*t + l6(3)) / l6(2), 'y');
+figure;imshow(I);
+hold on;
+t=1:0.1:1000;
+plot(t, -(l1(1)*t + l1(3)) / l1(2), 'y');
+plot(t, -(l3(1)*t + l3(3)) / l3(2), 'y');
+plot(t, -(l5(1)*t + l5(3)) / l5(2), 'y');
+plot(t, -(l6(1)*t + l6(3)) / l6(2), 'y');
 
 Hs = get_metric_rect(lr1, lr3, lr5, lr6);
-I3 = apply_H2(I20, Hs);
+I3 = apply_H(I2, Hs);
 
 lrr1 = inv(transpose(Hs))*lr1;
 lrr3 = inv(transpose(Hs))*lr3;
@@ -198,10 +191,79 @@ alpha_orto = acos(dot(omega*lrr1,lrr3)/(sqrt(dot(omega*lrr1,lrr1))*sqrt(dot(omeg
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 4. OPTIONAL: Metric Rectification in a single step
 % Use 5 pairs of orthogonal lines (pages 55-57, Hartley-Zisserman book)
-one_step('Data/0000_s.png', 'Data/0000_s_info_lines.txt');
+i = 424;
+p1 = [A(i,1) A(i,2) 1]';
+p2 = [A(i,3) A(i,4) 1]';
+i = 240;
+p3 = [A(i,1) A(i,2) 1]';
+p4 = [A(i,3) A(i,4) 1]';
+i = 712;
+p5 = [A(i,1) A(i,2) 1]';
+p6 = [A(i,3) A(i,4) 1]';
+i = 565;
+p7 = [A(i,1) A(i,2) 1]';
+p8 = [A(i,3) A(i,4) 1]';
 
+i = 227;
+p9 = [A(i,1) A(i,2) 1]';
+p10 = [A(i,3) A(i,4) 1]';
+i = 534;
+p11 = [A(i,1) A(i,2) 1]';
+p12 = [A(i,3) A(i,4) 1]';
 
+i = 567;
+p13 = [A(i,1) A(i,2) 1]';
+p14 = [A(i,3) A(i,4) 1]';
+i = 367;
+p15 = [A(i,1) A(i,2) 1]';
+p16 = [A(i,3) A(i,4) 1]';
 
+i = 424;
+p17 = [A(i,1) A(i,2) 1]';
+p18 = [A(i,3) A(i,4) 1]';
+i = 565;
+p19 = [A(i,1) A(i,2) 1]';
+p20 = [A(i,3) A(i,4) 1]';
+
+l1 = cross(p1,p2);
+m1 = cross(p5,p6);
+l2 = cross(p3,p4);
+m2 = cross(p7,p8);
+
+l3 = cross(p9,p10);
+m3 = cross(p11,p12);
+l4 = cross(p13,p14);
+m4 = cross(p15,p16);
+
+l5 = cross(p1,p4);
+m5 = cross(p3,p2);
+
+A = [
+[l1(1)*m1(1), (l1(1)*m1(2)+l1(2)*m1(1))/2, l1(2)*m1(2), (l1(1)*m1(3)+l1(3)*m1(1))/2, (l1(2)*m1(3)+l1(3)*m1(2))/2, l1(3)*m1(3)];
+[l2(1)*m2(1), (l2(1)*m2(2)+l2(2)*m2(1))/2, l2(2)*m2(2), (l2(1)*m2(3)+l2(3)*m2(1))/2, (l2(2)*m2(3)+l2(3)*m2(2))/2, l2(3)*m2(3)];
+[l3(1)*m3(1), (l3(1)*m3(2)+l3(2)*m3(1))/2, l3(2)*m3(2), (l3(1)*m3(3)+l3(3)*m3(1))/2, (l3(2)*m3(3)+l3(3)*m3(2))/2, l3(3)*m3(3)];
+[l4(1)*m4(1), (l4(1)*m4(2)+l4(2)*m4(1))/2, l4(2)*m4(2), (l4(1)*m4(3)+l4(3)*m4(1))/2, (l4(2)*m4(3)+l4(3)*m4(2))/2, l4(3)*m4(3)];
+[l5(1)*m5(1), (l5(1)*m5(2)+l5(2)*m5(1))/2, l5(2)*m5(2), (l5(1)*m5(3)+l5(3)*m5(1))/2, (l5(2)*m5(3)+l5(3)*m5(2))/2, l5(3)*m5(3)]
+];
+
+% [U D V] = svd(A);
+% x = V(:,6);
+x=null(A);
+a = x(1);
+b = x(2);
+c = x(3);
+d = x(4);
+e = x(5);
+f = x(6);
+
+C = [[a b/2 d/2]; [b/2 c e/2]; [d/2 e/2 f]];
+
+K = chol(C);
+H = eye(3);
+H(1:2,1:2) = inv(K);
+
+I4 = apply_H(uint8(I), H);
+figure;imshow(uint8(I4));
 %% 5. OPTIONAL: Affine Rectification of the left facade of image 0000
 
 %% 6. OPTIONAL: Metric Rectification of the left facade of image 0000
