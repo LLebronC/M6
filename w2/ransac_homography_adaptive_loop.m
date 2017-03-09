@@ -32,6 +32,9 @@ end
 H = homography2d(x1(:,best_inliers), x2(:,best_inliers));
 idx_inliers = best_inliers;
 
+function homo = homography2d(x1, x2)
+    homo = x1/x2;% x1 = H*x2, sacar H
+    
 
 function idx_inliers = compute_inliers(H, x1, x2, th)
     % Check that H is invertible
@@ -39,10 +42,11 @@ function idx_inliers = compute_inliers(H, x1, x2, th)
         idx_inliers = [];
         return
     end
-    
-
+    hx1 = H*x1;
+    hx2 = inv(H)*x2;
+        
     % compute the symmetric geometric error
-    d2 = % ToDo
+    d2 = sqrt((x2(:)-hx1(:)).^2).^2 + sqrt((x1(:)-hx2(:)).^2); % ToDo, no se que poner aqui, estaba vacio, mirar diapo 59 de 60 de lecture 2
     idx_inliers = find(d2 < th.^2);
 
 
