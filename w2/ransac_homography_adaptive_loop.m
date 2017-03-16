@@ -32,9 +32,9 @@ end
 H = homography2d(x1(:,best_inliers), x2(:,best_inliers));
 idx_inliers = best_inliers;
 
-function homo = homography2d(x1, x2)
-    homo = x1/x2;% x1 = H*x2, sacar H
-    
+% function homo = homography2d(x1, x2)
+%     homo = x2/x1;% x2 = H*x1, sacar H
+   
 
 function idx_inliers = compute_inliers(H, x1, x2, th)
     % Check that H is invertible
@@ -46,13 +46,25 @@ function idx_inliers = compute_inliers(H, x1, x2, th)
     hx2 = inv(H)*x2;
         
     % compute the symmetric geometric error
-    d2 = sqrt((x2(:)-hx1(:)).^2).^2 + sqrt((x1(:)-hx2(:)).^2); % ToDo, no se que poner aqui, estaba vacio, mirar diapo 59 de 60 de lecture 2
+    % ToDo: lecture 2 diapo 37 (the reprojection error)
+    d2 = eucliadia_distance(x2,hx1)+ eucliadia_distance(hx2,x1);
     idx_inliers = find(d2 < th.^2);
 
 
 function xn = normalise(x)    
     xn = x ./ repmat(x(end,:), size(x,1), 1);
 
+function x=eucliadia_distance(X,Y)
+    points=find(X(3,:)~=0);
+    X(1:2,points)=[X(1,points)./X(3,points);X(2,points)./X(3,points);];
+    X=X(1:2,:);
+    
+    points=find(Y(3,:)~=0);
+    Y(1:2,points)=[Y(1,points)./Y(3,points);Y(2,points)./Y(3,points);];
+    Y=Y(1:2,:);
+    
+    suma=(X(1,:)-Y(1,:)).^2+(X(2,:)-Y(2,:)).^2;
+    x=sqrt(suma);
     
 function item = randomsample(npts, n)
 	a = [1:npts]; 
