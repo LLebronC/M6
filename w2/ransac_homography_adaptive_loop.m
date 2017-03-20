@@ -24,7 +24,7 @@ while it < max_it
     pNoOutliers = min(1-eps, pNoOutliers);% avoid division by 0
     p=0.99;
     max_it = log(1-p)/log(pNoOutliers);
-    
+
     it = it + 1;
 end
 
