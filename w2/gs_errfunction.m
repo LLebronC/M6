@@ -1,6 +1,4 @@
 function [ E ] = gs_errfunction( P0, Xobs ); 
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
     nobs = size(Xobs,1)/2;
     
     x1 = Xobs(1:nobs);
