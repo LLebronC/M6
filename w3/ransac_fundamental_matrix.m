@@ -25,7 +25,7 @@ while it < max_it
 %     p=0.99;
 %     max_it = log(1-p)/log(pNoOutliers);
 
-    it = it + 1
+    it = it + 1;
 end
 
 % compute F from all the inliers
@@ -45,7 +45,7 @@ function idx_inliers = compute_inliers(F, x1, x2, th)
 function xn = normalise(x)    
     xn = x ./ repmat(x(end,:), size(x,1), 1);
     
-function x=sampson_distance(F,X,Y)
+function disx=sampson_distance(F,X,Y)
     points=find(X(3,:)~=0);
     X(1:2,points)=[X(1,points)./X(3,points);X(2,points)./X(3,points);];
     X=X(1:2,:);
@@ -56,9 +56,20 @@ function x=sampson_distance(F,X,Y)
     Y=Y(1:2,:);
     Y(3,:) = 1;
     
-    Fx = F*X;
-    Fy = F'*Y;
-    x=sum(X'*F*Y)^2/((Fx(1,:))^2+(F*X(2,:))^2+(F'*Y(1,:))^2+(F'*Y(2,:))^2);
+    size_x=size(X,2);
+    
+    upsampsdis=zeros(1,size_x);
+    
+    for i =1:size_x
+        upsampsdis(i)= Y(:,i)'*F*X(:,i);
+    end
+    
+    FX = F*X;
+    FY = F'*Y;
+
+    % Evaluate distances
+    disx =  upsampsdis.^2 ./ (FX(1,:).^2 + FX(2,:).^2 + FY(1,:).^2 + FY(2,:).^2);
+
     
 function item = randomsample(npts, n)
 	a = [1:npts]; 
