@@ -8,27 +8,26 @@ addpath('sift'); % ToDo: change 'sift' to the correct path where you have the si
 %% 1. Compute the fundamental matrix
 
 % Two camera matrices for testing purposes
-% P1 = eye(3,4);
-% c = cosd(15); s = sind(15);
-% R = [c -s 0; s c 0; 0 0 1];
-% t = [.3 0.1 0.2]';
-% P2 = [R t];
-% n = 8;
-% X = [rand(3,n); ones(1,n)] + [zeros(2,n); 3 * ones(1,n); zeros(1,n)];
-% x1_test = P1 * X;
-% x2_test = P2 * X;
-% 
-% % Estimated fundamental matrix
-% % ToDo: create the following function that estimates F using the normalised 8 point algorithm
-% F_es = fundamental_matrix(x1_test, x2_test);
-% 
-% % Real fundamental matrix
-% Translation = [0 -t(3) t(2); t(3) 0  -t(1); -t(2) t(1) 0];
-% F_gt =Translation * R; % ToDo: write the expression of the real fundamental matrix for P1 and P2
-% 
-% % Evaluation: these two matrices should be very similar
-% F_gt / norm(F_gt)
-% F_es / norm(F_es)
+P1 = eye(3,4);
+c = cosd(15); s = sind(15);
+R = [c -s 0; s c 0; 0 0 1];
+t = [.3 0.1 0.2]';
+P2 = [R t];
+n = 8;
+X = [rand(3,n); ones(1,n)] + [zeros(2,n); 3 * ones(1,n); zeros(1,n)];
+x1_test = P1 * X;
+x2_test = P2 * X;
+
+% Estimated fundamental matrix
+F_es = fundamental_matrix(x1_test, x2_test);
+
+% Real fundamental matrix
+Translation = [0 -t(3) t(2); t(3) 0  -t(1); -t(2) t(1) 0];
+F_gt =Translation * R; 
+
+% Evaluation: these two matrices should be very similar
+F_gt / norm(F_gt)
+F_es / norm(F_es)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -62,7 +61,6 @@ plotmatches(im1, im2, points_1(1:2,:), points_2(1:2,:), matches, 'Stacking', 'v'
 p1 = [points_1(1:2, matches(1,:)); ones(1, length(matches))];
 p2 = [points_2(1:2, matches(2,:)); ones(1, length(matches))];
 
-% ToDo: create this function (you can use as a basis 'ransac_homography_adaptive_loop.m')
 [F, inliers] = ransac_fundamental_matrix(p1, p2, 2.0); 
 
 % show inliers
