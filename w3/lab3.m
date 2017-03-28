@@ -23,7 +23,8 @@ addpath('sift'); % ToDo: change 'sift' to the correct path where you have the si
 % F_es = fundamental_matrix(x1_test, x2_test);
 % 
 % % Real fundamental matrix
-% F_gt = [ 0 0 0; 0 0 -1; 0 1 0] % ToDo: write the expression of the real fundamental matrix for P1 and P2
+% Translation = [0 -t(3) t(2); t(3) 0  -t(1); -t(2) t(1) 0];
+% F_gt =Translation * R; % ToDo: write the expression of the real fundamental matrix for P1 and P2
 % 
 % % Evaluation: these two matrices should be very similar
 % F_gt / norm(F_gt)
@@ -73,10 +74,8 @@ vgg_gui_F(im1rgb, im2rgb, F');
 
 
 %% Plot some epipolar lines
-[u,s,v] = svd(F);
-l2 = v(:,end) % epipolar lines in image 2 % ToDo
-[u,s,v] = svd(F');
-l1 = v(:,end) % epipolar lines in image 1 % ToDo
+l2 = F*p1; % epipolar lines in image 2 % ToDo
+l1 = F'*p2; % epipolar lines in image 1 % ToDo
 
 % choose three random indices
 m1 = inliers(10);
