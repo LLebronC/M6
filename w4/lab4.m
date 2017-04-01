@@ -94,18 +94,35 @@ K = H * K;
 
 
 % ToDo: Compute the Essential matrix from the Fundamental matrix
-% E = ...
+ E = K'*F*K;
 
 
 % ToDo: write the camera projection matrix for the first camera
-% P1 = ...
+P1 = [eye(3) zeros(3,1)];
 
 % ToDo: write the four possible matrices for the second camera
-% Pc2 = {};
-% Pc2{1} = ...
-% Pc2{2} = ...
-% Pc2{3} = ...
-% Pc2{4} = ...
+W=[0 -1 0; 1 0 0; 0 0 1];
+Z=[0 1 0;-1 0 0; 0 0 0];
+
+[U,D,V]=svd(E);
+
+S=U*Z*U';
+
+T=U(:,end);
+
+R1=U*W*V';
+if det(R1) < 0
+    R1 = -R1;
+end
+R2=U*W'*V';
+if det(R2) < 0
+    R2 = -R2;
+end
+Pc2 = {};
+Pc2{1} = [R1 T];
+Pc2{2} = [R1 -T];
+Pc2{3} = [R2 T];
+Pc2{4} = [R2 -T];
 
 % HINT: You may get improper rotations; in that case you need to change
 %       their sign.
@@ -125,7 +142,7 @@ plot_camera(Pc2{4},w,h);
 
 %% Reconstruct structure
 % ToDo: Choose a second camera candidate by triangulating a match.
-% P2 = ...
+P2=Pc2{1};
 
 % Triangulate all matches.
 N = size(x1,2);
