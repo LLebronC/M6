@@ -1,12 +1,14 @@
 function [depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, matching_cost)
     image_size=size(leftimage);
     
+    %Pixels to center of the window
     window_size=floor(window_size./2);
+    %depht map
     depth_map=zeros(image_size(1),image_size(2),1);
-    for counti=window_size(1)+1:window_size(1):image_size(1)-window_size(1)
-        for countj=window_size(2)+1:window_size(2):image_size(2)-window_size(2)
-            leftwindow=leftimage(counti-window_size(1):counti+window_size(1), countj-window_size(2):countj+window_size(2));
-            
+    %image loop
+    for counti=window_size(1)+1:image_size(1)-window_size(1) 
+        for countj=window_size(2)+1:image_size(2)-window_size(2)  %window_size(2)
+            leftwindow=leftimage(counti-window_size(1):counti+window_size(1), countj-window_size(2):countj+window_size(2));        
             countdisp=0;
             if strcmp(matching_cost,'SSD')
                 vdis=Inf;    
@@ -16,14 +18,15 @@ function [depth_map] = stereo_computation(leftimage, rightimage, minimum_dispari
             
             
             for disparity =minimum_disparity:maximum_disparity
-                downposi=counti-window_size(1)+disparity;
-                upposi=counti+window_size(1)+disparity;
+                downposi=counti-window_size(1);
+                upposi=counti+window_size(1);
                 downposj=countj-window_size(2)+disparity;
                 upposj=countj+window_size(2)+disparity;
                 if (downposi>0 && downposj>0 && upposi<image_size(1) && upposj<image_size(2))
                     rightwindow=rightimage(downposi:upposi,downposj:upposj);
                     if strcmp(matching_cost,'SSD')
                         aux_vdis=sum(sum((leftwindow - rightwindow).^2));
+                        %aux_vdis=corr2(leftwindow,rightwindow);
                         if(aux_vdis<vdis)
                             vdis=aux_vdis;
                             depth_map(counti,countj)=countdisp;
@@ -41,4 +44,5 @@ function [depth_map] = stereo_computation(leftimage, rightimage, minimum_dispari
             end
         end
     end
+    
 end

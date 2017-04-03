@@ -211,11 +211,11 @@ addpath('sift'); % ToDo: change 'sift' to the correct path where you have the si
 %
 % Note 1: Use grayscale images
 % Note 2: Use 0 as minimum disparity and 16 as the the maximum one.
-leftimage = double(rgb2gray(imread('Data/scene1.row3.col3.ppm')));
-rightimage = double(rgb2gray(imread('Data/scene1.row3.col4.ppm')));
+rightimage = double(rgb2gray(imread('Data/scene1.row3.col3.ppm')));
+leftimage = double(rgb2gray(imread('Data/scene1.row3.col4.ppm')));
 minimum_disparity = 0;
 maximum_disparity = 16;
-window_size = [9 9];
+window_size = [5 5];
 
 [depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, 'SSD');
 
