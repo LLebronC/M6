@@ -229,25 +229,34 @@ addpath('sift'); % ToDo: change 'sift' to the correct path where you have the si
 %
 % Evaluate the results changing the window size (e.g. 3x3, 9x9, 20x20,
 % 30x30) and the matching cost. Comment the results.
-rightimage = double(rgb2gray(imread('Data/scene1.row3.col3.ppm')));
-leftimage = double(rgb2gray(imread('Data/scene1.row3.col4.ppm')));
-minimum_disparity = 0;
-maximum_disparity = 16;
-window_size = [5 5];
-
-[depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, 'NCC');
-
-figure;
-imshow(depth_map,[]);
+% rightimage = double(rgb2gray(imread('Data/scene1.row3.col3.ppm')));
+% leftimage = double(rgb2gray(imread('Data/scene1.row3.col4.ppm')));
+% minimum_disparity = 0;
+% maximum_disparity = 16;
+% window_size =5;
+% 
+% [depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, 'NCC');
+% 
+% figure;
+% imshow(depth_map,[]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 5. OPTIONAL: Depth map computation with local methods
+%% 5. Depth map computation with local methods
 
 % Data images: '0001_rectified_s.png','0002_rectified_s.png'
 
 % Test the functions implemented in the previous section with the facade
 % images. Try different matching costs and window sizes and comment the
 % results.
-
+% rightimage = double(rgb2gray(imread('Data/0001_rectified_s.png')));
+% leftimage = double(rgb2gray(imread('Data/0002_rectified_s.png')));
+% minimum_disparity = 0;
+% maximum_disparity = 16;
+% window_size =5;
+% 
+% [depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, 'ncc');
+% 
+% figure;
+% imshow(depth_map,[]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 6. OPTIONAL: Bilateral weights
 
@@ -258,7 +267,16 @@ imshow(depth_map,[]);
 % Comment the results and compare them to the previous results (no weights).
 %
 % Note: Use grayscale images (the paper uses color images)
+rightimage = double(rgb2gray(imread('Data/scene1.row3.col3.ppm')));
+leftimage = double(rgb2gray(imread('Data/scene1.row3.col4.ppm')));
+minimum_disparity = 0;
+maximum_disparity = 16;
+window_size = 5;
 
+[depth_map] = stereo_computation(leftimage, rightimage, minimum_disparity, maximum_disparity, window_size, 'bilateral');
+
+figure;
+imshow(depth_map,[]);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 7. OPTIONAL:  Stereo computation with Belief Propagation
 
