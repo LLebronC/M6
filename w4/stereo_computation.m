@@ -26,14 +26,13 @@ function [depth_map] = stereo_computation(leftimage, rightimage, minimum_dispari
                     rightwindow=rightimage(downposi:upposi,downposj:upposj);
                     if strcmp(matching_cost,'SSD')
                         aux_vdis=sum(sum((leftwindow - rightwindow).^2));
-                        %aux_vdis=corr2(leftwindow,rightwindow);
                         if(aux_vdis<vdis)
                             vdis=aux_vdis;
                             depth_map(counti,countj)=countdisp;
                         end
                     elseif strcmp(matching_cost,'NCC')
-                        aux_vdis=((leftwindow - mean2(leftwindow)).*(rightwindow - mean2(rightwindow)))/...
-                            (sqrt(sum(sum((leftwindow - mean2(leftwindow)).^2)))*sqrt(sum(sum((rightwindow - mean2(rightwindow)).^2))));
+%                         aux_vdis=corr2(leftwindow,rightwindow);
+                        aux_vdis=sum(sum(((leftwindow - mean2(leftwindow)).*(rightwindow - mean2(rightwindow)))/(sqrt(sum(sum((leftwindow - mean2(leftwindow)).^2)))*sqrt(sum(sum((rightwindow - mean2(rightwindow)).^2))))));
                         if(aux_vdis>vdis)
                             vdis=aux_vdis;
                             depth_map(counti,countj)=countdisp;
