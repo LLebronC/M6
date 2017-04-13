@@ -3,7 +3,7 @@
 
 
 addpath('sift'); % ToDo: change 'sift' to the correct path where you have the sift functions
-
+close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 0. Create synthetic data
@@ -171,6 +171,8 @@ x2(3,:) = x2(3,:)./x2(3,:);
 
 %% Check projected points (estimated and data points)
 
+[Xproj, Pproj] = factorization_method(x1,x2);
+
 for i=1:2
     x_proj{i} = euclid(Pproj(3*i-2:3*i, :)*Xproj);
 end
@@ -236,7 +238,7 @@ axis vis3d
 axis equal
 
 
-
+return
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine reconstruction (synthetic data)
 
