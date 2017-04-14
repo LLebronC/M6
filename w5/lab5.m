@@ -194,51 +194,51 @@ plot(x_proj{2}(1,:),x_proj{2}(2,:),'bo');
 
 
 %% Visualize projective reconstruction
-Xaux(1,:) = Xproj(1,:)./Xproj(4,:);
-Xaux(2,:) = Xproj(2,:)./Xproj(4,:);
-Xaux(3,:) = Xproj(3,:)./Xproj(4,:);
-X=Xaux;
-
-figure;
-hold on;
-X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
-plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
-plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
-X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
-plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-axis vis3d
-axis equal
-
-
-return
+% Xaux(1,:) = Xproj(1,:)./Xproj(4,:);
+% Xaux(2,:) = Xproj(2,:)./Xproj(4,:);
+% Xaux(3,:) = Xproj(3,:)./Xproj(4,:);
+% X=Xaux;
+% 
+% figure;
+% hold on;
+% X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
+% plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
+% plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
+% X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% axis vis3d
+% axis equal
+% 
+% 
+% return
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine reconstruction (synthetic data)
 
@@ -260,7 +260,19 @@ v3p = vanishing_point(x2(:,1),x2(:,2),x2(:,4),x2(:,3));
 % ToDo: use the vanishing points to compute the matrix Hp that 
 %       upgrades the projective reconstruction to an affine reconstruction
 
+% USANDO -> a) Pick three vanishing points in two images and find their
+% corresponding 3D points by triangulation.
 
+% Se supone que de aqui saco los vanishing points en el espacio 3D que me
+% forman el plano en el infinito [pero ni puta idea de si lo hago bien]
+V1 = triangulate(v1(1:2), v1p(1:2), P1, P2,[w,h]);
+V2 = triangulate(v2(1:2), v2p(1:2), P1, P2,[w,h]);
+V3 = triangulate(v3(1:2), v3p(1:2), P1, P2,[w,h]);
+
+A = [V1'; V2'; V3']; %X se supone que son estos 3 puntos encontrados
+p = null(A); % <- Lecture9 diapo 10 con el null obtengo p directamente creo
+
+Hp = [eye(3) zeros(1,3)'; p(1:3)' 1]; % <- Lecture9 diapo 9
 %% check results
 
 Xa = euclid(Hp*Xproj);
