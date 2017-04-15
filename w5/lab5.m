@@ -326,6 +326,17 @@ v1 = vanishing_point(x1(:,2),x1(:,5),x1(:,3),x1(:,6));
 v2 = vanishing_point(x1(:,1),x1(:,2),x1(:,3),x1(:,4));
 v3 = vanishing_point(x1(:,1),x1(:,4),x1(:,2),x1(:,3));
 
+
+omega = transpose(inv(K))*inv(K);
+M = Pproj(1:3,1:3);
+
+aux = inv(transpose(M)*omega*M);
+A = chol(aux);
+
+Ha = eye(4,4);
+Ha(1:3,1:3) = inv(A);
+
+
 %% check results
 
 Xa = euclid(Ha*Hp*Xproj);
@@ -379,12 +390,110 @@ I{2} = sum(Irgb{2}, 3) / 3;
 
 Ncam = length(I);
 
+[h,w] = size(I{1});
 % ToDo: compute a projective reconstruction using the factorization method
+
+%% Compute keypoints and matches.
+points = cell(2,1);
+descr = cell(2,1);
+for i = 1:2
+    [points{i}, descr{i}] = sift(I{i}, 'Threshold', 0.01);
+    points{i} = points{i}(1:2,:);
+end
+
+matches = siftmatch(descr{1}, descr{2});
+
+% Plot matches.
+figure();
+plotmatches(I{1}, I{2}, points{1}, points{2}, matches, 'Stacking', 'v');
+
+%% Fit Fundamental matrix and remove outliers.
+x1 = points{1}(:, matches(1, :));
+x2 = points{2}(:, matches(2, :));
+[F, inliers] = ransac_fundamental_matrix(homog(x1), homog(x2), 2.0);
+
+% Plot inliers.
+inlier_matches = matches(:, inliers);
+figure;
+plotmatches(I{1}, I{2}, points{1}, points{2}, inlier_matches, 'Stacking', 'v');
+
+x1 = points{1}(:, inlier_matches(1, :));
+x2 = points{2}(:, inlier_matches(2, :));
+
+x1 = homog(x1);
+x2 = homog(x2);
 
 % ToDo: show the data points (image correspondences) and the projected
 % points (of the reconstructed 3D points) in images 1 and 2. Reuse the code
 % in section 'Check projected points' (synthetic experiment).
 
+[Xproj, Pproj] = factorization_method(x1,x2);
+
+for i=1:2
+    x_proj{i} = euclid(Pproj(3*i-2:3*i, :)*Xproj);
+end
+x_d{1} = euclid(x1);
+x_d{2} = euclid(x2);
+
+% image 1
+figure;
+hold on
+plot(x_d{1}(1,:),x_d{1}(2,:),'r*');
+plot(x_proj{1}(1,:),x_proj{1}(2,:),'bo');
+axis equal
+
+% image 2
+figure;
+hold on
+plot(x_d{2}(1,:),x_d{2}(2,:),'r*');
+plot(x_proj{2}(1,:),x_proj{2}(2,:),'bo');
+
+% TODO
+% % Visualize projective reconstruction
+% Xauxx(1,:) = Xproj(1,:)./Xproj(4,:);
+% Xauxx(2,:) = Xproj(2,:)./Xproj(4,:);
+% Xauxx(3,:) = Xproj(3,:)./Xproj(4,:);
+% X=Xauxx;
+% 
+% figure;
+% hold on;
+% X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
+% plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
+% plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
+% X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
+% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+% axis vis3d
+% axis equal
+
+a=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 5. Affine reconstruction (real data)
 
