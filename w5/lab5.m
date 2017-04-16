@@ -1,9 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lab 5: Reconstruction from uncalibrated viewas
 
-
+close all
 addpath('sift'); % ToDo: change 'sift' to the correct path where you have the sift functions
-close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 0. Create synthetic data
@@ -170,9 +169,7 @@ x2(3,:) = x2(3,:)./x2(3,:);
 % in the previous iteration.
 
 %% Check projected points (estimated and data points)
-
-[Xproj, Pproj] = factorization_method(x1,x2);
-
+[Pproj, Xproj] = factorization_method(x1,x2);
 for i=1:2
     x_proj{i} = euclid(Pproj(3*i-2:3*i, :)*Xproj);
 end
@@ -193,7 +190,7 @@ plot(x_d{2}(1,:),x_d{2}(2,:),'r*');
 plot(x_proj{2}(1,:),x_proj{2}(2,:),'bo');
 
 
-% Visualize projective reconstruction
+%% Visualize projective reconstruction
 Xaux(1,:) = Xproj(1,:)./Xproj(4,:);
 Xaux(2,:) = Xproj(2,:)./Xproj(4,:);
 Xaux(3,:) = Xproj(3,:)./Xproj(4,:);
@@ -237,6 +234,8 @@ plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
 axis vis3d
 axis equal
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine reconstruction (synthetic data)
 
@@ -255,24 +254,30 @@ v1p = vanishing_point(x2(:,21),x2(:,22),x2(:,23),x2(:,24));
 v2p = vanishing_point(x2(:,21),x2(:,23),x2(:,22),x2(:,24));
 v3p = vanishing_point(x2(:,1),x2(:,2),x2(:,4),x2(:,3));
 
+% add small epsilon to avoid division by zero
+%v3(3) = 0.000001;
+
 % ToDo: use the vanishing points to compute the matrix Hp that 
 %       upgrades the projective reconstruction to an affine reconstruction
 
-% USANDO -> a) Pick three vanishing points in two images and find their
-% corresponding 3D points by triangulation.
 
-% Se supone que de aqui saco los vanishing points en el espacio 3D que me
-% forman el plano en el infinito [pero ni puta idea de si lo hago bien]
-V1 = triangulate(v1(1:2), v1p(1:2), P1, P2,[w,h]);
-V2 = triangulate(v2(1:2), v2p(1:2), P1, P2,[w,h]);
-V3 = triangulate(v3(1:2), v3p(1:2), P1, P2,[w,h]);
+% from lecture 9 slide 20, whe want to compute H_{a<-p}
+% we first create the matrix A, which is 3x4 (slide 22)
+% to do so, we have to get the vanishing points v and v' in P3 space,
+% thus we triangulate them
 
-A = [V1'; V2'; V3']; %X se supone que son estos 3 puntos encontrados
-p = null(A); % <- Lecture9 diapo 10 con el null obtengo p directamente creo
+V1 = triangulate(euclid(v1), euclid(v1p), Pproj(1:3,:), Pproj(4:6,:), [w h]);
+V2 = triangulate(euclid(v2), euclid(v2p), Pproj(1:3,:), Pproj(4:6,:), [w h]);
+V3 = triangulate(euclid(v3), euclid(v3p), Pproj(1:3,:), Pproj(4:6,:), [w h]);
 
-Hp = [eye(3) zeros(1,3)'; p(1:3)' 1]; % <- Lecture9 diapo 9
+A = [V1'; V2'; V3'];
 
+[U, D, V] = svd(A);
+p = V(:,end);
+p = p / p(end);
 
+Hp = eye(4,4);
+Hp(end,:) = p';
 %% check results
 
 Xa = euclid(Hp*Xproj);
@@ -325,34 +330,32 @@ axis equal
 v1 = vanishing_point(x1(:,2),x1(:,5),x1(:,3),x1(:,6));
 v2 = vanishing_point(x1(:,1),x1(:,2),x1(:,3),x1(:,4));
 v3 = vanishing_point(x1(:,1),x1(:,4),x1(:,2),x1(:,3));
-
 u = v1;
 v = v2;
 z = v3;
 
-A = [    u(1)*v(1)    u(1)*v(2) + u(2)*v(1)  u(1)*v(3) + u(3)*v(1)    u(2)*v(2)    u(2)*v(3) + u(3)*v(2)  u(3)*v(3);
-         u(1)*z(1)    u(1)*z(2) + u(2)*z(1)  u(1)*z(3) + u(3)*z(1)    u(2)*z(2)    u(2)*z(3) + u(3)*z(2)  u(3)*z(3);
-         v(1)*z(1)    v(1)*z(2) + v(2)*z(1)  v(1)*z(3) + v(3)*z(1)    v(2)*z(2)    v(2)*z(3) + v(3)*z(2)  v(3)*z(3);
-         0            1                      0                        0            0                      0;
-         1            0                      0                       -1            0                      0;         ];
+% We need to create matrix A_omega in order to get matrix omega
+% slide 35
+Aw = [u(1)*v(1) (u(1)*v(2))+(u(2)*v(1)) (u(1)*v(3))+(u(3)*v(1)) u(2)*v(2) (u(2)*v(3))+(u(3)*v(2)) u(3)*v(3);
+           u(1)*z(1) (u(1)*z(2))+(u(2)*z(1)) (u(1)*z(3))+(u(3)*z(1)) u(2)*z(2) (u(2)*z(3))+(u(3)*z(2)) u(3)*z(3);
+           v(1)*z(1) (v(1)*z(2))+(v(2)*z(1)) (v(1)*z(3))+(v(3)*z(1)) v(2)*z(2) (v(2)*z(3))+(v(3)*z(2)) v(3)*z(3);
+           0         1                       0                       0          0                      0;
+           1         0                       0                       -1         0                      0;        ];
 
-[U, D, V] = svd(A);
+
+[U, D, V] = svd(Aw);
 Wv = V(:,end);
 
-W = [   Wv(1)  Wv(2)  Wv(3);
-        Wv(2)  Wv(4)  Wv(5);
-        Wv(3)  Wv(5)  Wv(6); ];
-
-
+W = [Wv(1) Wv(2) Wv(3);
+     Wv(2) Wv(4) Wv(5);
+     Wv(3) Wv(5) Wv(6)];
+ 
 P = Pproj(1:3, :)*inv(Hp);
-M = P(:,1:3);
-
-patillada = abs(inv(M' * W * M));
-A = chol(patillada);
+M = P(1:3,1:3);
+A = chol(inv(M' * W * M));
 
 Ha = eye(4,4);
 Ha(1:3,1:3) = inv(A);
-
 
 %% check results
 
@@ -410,7 +413,7 @@ Ncam = length(I);
 [h,w] = size(I{1});
 % ToDo: compute a projective reconstruction using the factorization method
 
-%% Compute keypoints and matches.
+% Compute keypoints and matches.
 points = cell(2,1);
 descr = cell(2,1);
 for i = 1:2
@@ -489,19 +492,23 @@ params.PRINT = 1;
 params.PLOT = 1;
 [horizon, VPs] = detect_vps(img_in, folder_out, manhattan, acceleration, focal_ratio, params);
 
-
-img_in =  'Data/0001_s.png';
+img_in =  'Data/0001_s.png'; % input image
 [horizon2, VPs2] = detect_vps(img_in, folder_out, manhattan, acceleration, focal_ratio, params);
+
+%% Now that we have vanishing points, compute Hp
 
 A = [triangulate(VPs(:,1), VPs2(:,1), Pproj(1:3,:), Pproj(4:6,:), [w h])';
     triangulate(VPs(:,2), VPs2(:,2), Pproj(1:3,:), Pproj(4:6,:), [w h])';
     triangulate(VPs(:,3), VPs2(:,3), Pproj(1:3,:), Pproj(4:6,:), [w h])'];
 
 p = null(A);
+
+% normalize p because it is up to scale and we want p(4) to be 1
 p = p / p(end);
 
 Hp = eye(4,4);
-Hp(end,:) = transpose(p);
+Hp(end,:) = p';
+
 
 %% Visualize the result
 
@@ -524,6 +531,51 @@ axis equal;
 
 % ToDo: compute the matrix Ha that updates the affine reconstruction
 % to a metric one and visualize the result in 3D as in the previous section
+v1 = homog(VPs(:,1));
+v2 = homog(VPs(:,2));
+v3 = homog(VPs(:,3));
+
+A_omega =   [v1(1)*v2(1) v1(1)*v2(2) + v1(2)*v2(1) v1(1)*v2(3) + v1(3)*v2(1) v1(2)*v2(2) v1(2)*v2(3) + v1(3)*v2(2) v1(3)*v2(3);
+            v1(1)*v3(1) v1(1)*v3(2) + v1(2)*v3(1) v1(1)*v3(3) + v1(3)*v3(1) v1(2)*v3(2) v1(2)*v3(3) + v1(3)*v3(2) v1(3)*v3(3);
+            v2(1)*v3(1) v2(1)*v3(2) + v2(2)*v3(1) v2(1)*v3(3) + v2(3)*v3(1) v2(2)*v3(2) v2(2)*v3(3) + v2(3)*v3(2) v2(3)*v3(3);
+            0           1                         0                         0           0                         0;
+            1           0                         0                         -1          0                         0];
+
+
+[~,~, V] = svd(A_omega);
+omega_v = V(:,end);
+
+omega = [omega_v(1) omega_v(2) omega_v(3);
+         omega_v(2) omega_v(4) omega_v(5);
+         omega_v(3) omega_v(5) omega_v(6)];
+     
+% We need to compute matrix A from slide 29 (lecture 9)
+P = Pproj(1:3, :)*inv(Hp);
+M = P(:,1:3);
+%M = Pproj(1:3,1:3);
+
+AAt = inv(M'*omega*M);
+
+A = chol(AAt);
+
+Ha = eye(4,4);
+Ha(1:3,1:3) = inv(A);
+
+%% Visualize the result
+
+% x1m are the data points in image 1
+% Xm are the reconstructed 3D points (projective reconstruction)
+
+r = interp2(double(Irgb{1}(:,:,1)), x1m(1,:), x1m(2,:));
+g = interp2(double(Irgb{1}(:,:,2)), x1m(1,:), x1m(2,:));
+b = interp2(double(Irgb{1}(:,:,3)), x1m(1,:), x1m(2,:));
+Xe = euclid(Ha*Hp*Xm);
+figure; hold on;
+[w,h] = size(I{1});
+for i = 1:length(Xe)
+    scatter3(Xe(1,i), Xe(2,i), Xe(3,i), 2^2, [r(i) g(i) b(i)], 'filled');
+end;
+axis equal;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 7. OPTIONAL: Projective reconstruction from two views
