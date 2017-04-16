@@ -1,5 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lab 5: Reconstruction from uncalibrated viewas
+
 close all
 addpath('sift'); % ToDo: change 'sift' to the correct path where you have the sift functions
 
@@ -349,7 +350,7 @@ W = [Wv(1) Wv(2) Wv(3);
  
 P = Pproj(1:3, :)*inv(Hp);
 M = P(1:3,1:3);
-A = chol(inv(M' * W * M));
+A = chol(abs(inv(M' * W * M)));
 
 Ha = eye(4,4);
 Ha(1:3,1:3) = inv(A);
@@ -444,7 +445,7 @@ x2 = homog(x2);
 % points (of the reconstructed 3D points) in images 1 and 2. Reuse the code
 % in section 'Check projected points' (synthetic experiment).
 
-[Xproj, Pproj] = factorization_method(x1,x2);
+[Pproj, Xproj] = factorization_method(x1,x2);
 
 for i=1:2
     x_proj{i} = euclid(Pproj(3*i-2:3*i, :)*Xproj);
@@ -499,8 +500,6 @@ A = [triangulate(VPs(:,1), VPs2(:,1), Pproj(1:3,:), Pproj(4:6,:), [w h])';
     triangulate(VPs(:,3), VPs2(:,3), Pproj(1:3,:), Pproj(4:6,:), [w h])'];
 
 p = null(A);
-
-% normalize p because it is up to scale and we want p(4) to be 1
 p = p / p(end);
 
 Hp = eye(4,4);
@@ -509,13 +508,10 @@ Hp(end,:) = p';
 
 %% Visualize the result
 
-% x1m are the data points in image 1
-% Xm are the reconstructed 3D points (projective reconstruction)
-
-r = interp2(double(Irgb{1}(:,:,1)), x1m(1,:), x1m(2,:));
-g = interp2(double(Irgb{1}(:,:,2)), x1m(1,:), x1m(2,:));
-b = interp2(double(Irgb{1}(:,:,3)), x1m(1,:), x1m(2,:));
-Xe = euclid(Hp*Xm);
+r = interp2(double(Irgb{1}(:,:,1)), x1(1,:), x1(2,:));
+g = interp2(double(Irgb{1}(:,:,2)), x1(1,:), x1(2,:));
+b = interp2(double(Irgb{1}(:,:,3)), x1(1,:), x1(2,:));
+Xe = euclid(Hp*Xproj);
 figure; hold on;
 [w,h] = size(I{1});
 for i = 1:length(Xe)
@@ -528,45 +524,37 @@ axis equal;
 
 % ToDo: compute the matrix Ha that updates the affine reconstruction
 % to a metric one and visualize the result in 3D as in the previous section
-v1 = homog(VPs(:,1));
-v2 = homog(VPs(:,2));
-v3 = homog(VPs(:,3));
+u = homog(VPs(:,1));
+v = homog(VPs(:,2));
+z = homog(VPs(:,3));
 
-A_omega =   [v1(1)*v2(1) v1(1)*v2(2) + v1(2)*v2(1) v1(1)*v2(3) + v1(3)*v2(1) v1(2)*v2(2) v1(2)*v2(3) + v1(3)*v2(2) v1(3)*v2(3);
-            v1(1)*v3(1) v1(1)*v3(2) + v1(2)*v3(1) v1(1)*v3(3) + v1(3)*v3(1) v1(2)*v3(2) v1(2)*v3(3) + v1(3)*v3(2) v1(3)*v3(3);
-            v2(1)*v3(1) v2(1)*v3(2) + v2(2)*v3(1) v2(1)*v3(3) + v2(3)*v3(1) v2(2)*v3(2) v2(2)*v3(3) + v2(3)*v3(2) v2(3)*v3(3);
-            0           1                         0                         0           0                         0;
-            1           0                         0                         -1          0                         0];
+Aw = [u(1)*v(1) (u(1)*v(2))+(u(2)*v(1)) (u(1)*v(3))+(u(3)*v(1)) u(2)*v(2) (u(2)*v(3))+(u(3)*v(2)) u(3)*v(3);
+      u(1)*z(1) (u(1)*z(2))+(u(2)*z(1)) (u(1)*z(3))+(u(3)*z(1)) u(2)*z(2) (u(2)*z(3))+(u(3)*z(2)) u(3)*z(3);
+      v(1)*z(1) (v(1)*z(2))+(v(2)*z(1)) (v(1)*z(3))+(v(3)*z(1)) v(2)*z(2) (v(2)*z(3))+(v(3)*z(2)) v(3)*z(3);
+      0         1                       0                       0          0                      0;
+      1         0                       0                       -1         0                      0;        ];
 
 
-[~,~, V] = svd(A_omega);
-omega_v = V(:,end);
+[U, D, V] = svd(Aw);
+Wv = V(:,end);
 
-omega = [omega_v(1) omega_v(2) omega_v(3);
-         omega_v(2) omega_v(4) omega_v(5);
-         omega_v(3) omega_v(5) omega_v(6)];
-     
-% We need to compute matrix A from slide 29 (lecture 9)
+W = [Wv(1) Wv(2) Wv(3);
+     Wv(2) Wv(4) Wv(5);
+     Wv(3) Wv(5) Wv(6)];
+ 
 P = Pproj(1:3, :)*inv(Hp);
-M = P(:,1:3);
-%M = Pproj(1:3,1:3);
-
-AAt = inv(M'*omega*M);
-
-A = chol(AAt);
+M = P(1:3,1:3);
+A = chol(abs(inv(M' * W * M)));
 
 Ha = eye(4,4);
 Ha(1:3,1:3) = inv(A);
 
 %% Visualize the result
 
-% x1m are the data points in image 1
-% Xm are the reconstructed 3D points (projective reconstruction)
-
-r = interp2(double(Irgb{1}(:,:,1)), x1m(1,:), x1m(2,:));
-g = interp2(double(Irgb{1}(:,:,2)), x1m(1,:), x1m(2,:));
-b = interp2(double(Irgb{1}(:,:,3)), x1m(1,:), x1m(2,:));
-Xe = euclid(Ha*Hp*Xm);
+r = interp2(double(Irgb{1}(:,:,1)), x1(1,:), x1(2,:));
+g = interp2(double(Irgb{1}(:,:,2)), x1(1,:), x1(2,:));
+b = interp2(double(Irgb{1}(:,:,3)), x1(1,:), x1(2,:));
+Xe = euclid(Ha*Hp*Xproj);
 figure; hold on;
 [w,h] = size(I{1});
 for i = 1:length(Xe)
@@ -574,6 +562,8 @@ for i = 1:length(Xe)
 end;
 axis equal;
 
+
+a=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 7. OPTIONAL: Projective reconstruction from two views
 
