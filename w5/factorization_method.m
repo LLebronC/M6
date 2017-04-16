@@ -18,7 +18,6 @@ function [Pproj, Xproj] = factorization_method(x1, x2)
         lambda(2,j) = (x1(:, j)'*F2*cross(e2, x2(:,j)))/(norm(cross(e2, x2(:,j))).^2*lambda(1, j));
     end
 
-    a = 0;
     dist= Inf;
     keepGoing = true;
     while keepGoing

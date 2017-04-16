@@ -1,6 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Lab 5: Reconstruction from uncalibrated viewas
-a=0;
 close all
 addpath('sift'); % ToDo: change 'sift' to the correct path where you have the sift functions
 
@@ -334,13 +333,11 @@ u = v1;
 v = v2;
 z = v3;
 
-% We need to create matrix A_omega in order to get matrix omega
-% slide 35
 Aw = [u(1)*v(1) (u(1)*v(2))+(u(2)*v(1)) (u(1)*v(3))+(u(3)*v(1)) u(2)*v(2) (u(2)*v(3))+(u(3)*v(2)) u(3)*v(3);
-           u(1)*z(1) (u(1)*z(2))+(u(2)*z(1)) (u(1)*z(3))+(u(3)*z(1)) u(2)*z(2) (u(2)*z(3))+(u(3)*z(2)) u(3)*z(3);
-           v(1)*z(1) (v(1)*z(2))+(v(2)*z(1)) (v(1)*z(3))+(v(3)*z(1)) v(2)*z(2) (v(2)*z(3))+(v(3)*z(2)) v(3)*z(3);
-           0         1                       0                       0          0                      0;
-           1         0                       0                       -1         0                      0;        ];
+      u(1)*z(1) (u(1)*z(2))+(u(2)*z(1)) (u(1)*z(3))+(u(3)*z(1)) u(2)*z(2) (u(2)*z(3))+(u(3)*z(2)) u(3)*z(3);
+      v(1)*z(1) (v(1)*z(2))+(v(2)*z(1)) (v(1)*z(3))+(v(3)*z(1)) v(2)*z(2) (v(2)*z(3))+(v(3)*z(2)) v(3)*z(3);
+      0         1                       0                       0          0                      0;
+      1         0                       0                       -1         0                      0;        ];
 
 
 [U, D, V] = svd(Aw);
