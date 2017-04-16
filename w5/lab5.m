@@ -193,52 +193,50 @@ plot(x_d{2}(1,:),x_d{2}(2,:),'r*');
 plot(x_proj{2}(1,:),x_proj{2}(2,:),'bo');
 
 
-%% Visualize projective reconstruction
-% Xaux(1,:) = Xproj(1,:)./Xproj(4,:);
-% Xaux(2,:) = Xproj(2,:)./Xproj(4,:);
-% Xaux(3,:) = Xproj(3,:)./Xproj(4,:);
-% X=Xaux;
-% 
-% figure;
-% hold on;
-% X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
-% plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
-% plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
-% X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% axis vis3d
-% axis equal
-% 
-% 
-% return
+% Visualize projective reconstruction
+Xaux(1,:) = Xproj(1,:)./Xproj(4,:);
+Xaux(2,:) = Xproj(2,:)./Xproj(4,:);
+Xaux(3,:) = Xproj(3,:)./Xproj(4,:);
+X=Xaux;
+
+figure;
+hold on;
+X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
+plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
+plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
+X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
+plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
+plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
+plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
+plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
+axis vis3d
+axis equal
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 2. Affine reconstruction (synthetic data)
 
@@ -273,6 +271,8 @@ A = [V1'; V2'; V3']; %X se supone que son estos 3 puntos encontrados
 p = null(A); % <- Lecture9 diapo 10 con el null obtengo p directamente creo
 
 Hp = [eye(3) zeros(1,3)'; p(1:3)' 1]; % <- Lecture9 diapo 9
+
+
 %% check results
 
 Xa = euclid(Hp*Xproj);
@@ -326,12 +326,29 @@ v1 = vanishing_point(x1(:,2),x1(:,5),x1(:,3),x1(:,6));
 v2 = vanishing_point(x1(:,1),x1(:,2),x1(:,3),x1(:,4));
 v3 = vanishing_point(x1(:,1),x1(:,4),x1(:,2),x1(:,3));
 
+u = v1;
+v = v2;
+z = v3;
 
-omega = transpose(inv(K))*inv(K);
-M = Pproj(1:3,1:3);
+A = [    u(1)*v(1)    u(1)*v(2) + u(2)*v(1)  u(1)*v(3) + u(3)*v(1)    u(2)*v(2)    u(2)*v(3) + u(3)*v(2)  u(3)*v(3);
+         u(1)*z(1)    u(1)*z(2) + u(2)*z(1)  u(1)*z(3) + u(3)*z(1)    u(2)*z(2)    u(2)*z(3) + u(3)*z(2)  u(3)*z(3);
+         v(1)*z(1)    v(1)*z(2) + v(2)*z(1)  v(1)*z(3) + v(3)*z(1)    v(2)*z(2)    v(2)*z(3) + v(3)*z(2)  v(3)*z(3);
+         0            1                      0                        0            0                      0;
+         1            0                      0                       -1            0                      0;         ];
 
-aux = inv(transpose(M)*omega*M);
-A = chol(aux);
+[U, D, V] = svd(A);
+Wv = V(:,end);
+
+W = [   Wv(1)  Wv(2)  Wv(3);
+        Wv(2)  Wv(4)  Wv(5);
+        Wv(3)  Wv(5)  Wv(6); ];
+
+
+P = Pproj(1:3, :)*inv(Hp);
+M = P(:,1:3);
+
+patillada = abs(inv(M' * W * M));
+A = chol(patillada);
 
 Ha = eye(4,4);
 Ha(1:3,1:3) = inv(A);
@@ -435,6 +452,7 @@ end
 x_d{1} = euclid(x1);
 x_d{2} = euclid(x2);
 
+
 % image 1
 figure;
 hold on
@@ -448,52 +466,7 @@ hold on
 plot(x_d{2}(1,:),x_d{2}(2,:),'r*');
 plot(x_proj{2}(1,:),x_proj{2}(2,:),'bo');
 
-% TODO
-% % Visualize projective reconstruction
-% Xauxx(1,:) = Xproj(1,:)./Xproj(4,:);
-% Xauxx(2,:) = Xproj(2,:)./Xproj(4,:);
-% Xauxx(3,:) = Xproj(3,:)./Xproj(4,:);
-% X=Xauxx;
-% 
-% figure;
-% hold on;
-% X1 = X(:,1); X2 = X(:,2); X3 = X(:,3); X4 = X(:,4);
-% plot3([X1(1) X2(1)], [X1(2) X2(2)], [X1(3) X2(3)]);
-% plot3([X3(1) X4(1)], [X3(2) X4(2)], [X3(3) X4(3)]);
-% X5 = X(:,5); X6 = X(:,6); X7 = X2; X8 = X3;
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,7); X6 = X(:,8); X7 = X1; X8 = X4;
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,9); X6 = X(:,10); X7 = X(:,11); X8 = X(:,12);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,13); X6 = X(:,14); X7 = X(:,15); X8 = X(:,16);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,17); X6 = X(:,18); X7 = X(:,19); X8 = X(:,20);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% X5 = X(:,21); X6 = X(:,22); X7 = X(:,23); X8 = X(:,24);
-% plot3([X5(1) X6(1)], [X5(2) X6(2)], [X5(3) X6(3)]);
-% plot3([X7(1) X8(1)], [X7(2) X8(2)], [X7(3) X8(3)]);
-% plot3([X5(1) X7(1)], [X5(2) X7(2)], [X5(3) X7(3)]);
-% plot3([X6(1) X8(1)], [X6(2) X8(2)], [X6(3) X8(3)]);
-% axis vis3d
-% axis equal
 
-a=0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 5. Affine reconstruction (real data)
 
@@ -516,6 +489,19 @@ params.PRINT = 1;
 params.PLOT = 1;
 [horizon, VPs] = detect_vps(img_in, folder_out, manhattan, acceleration, focal_ratio, params);
 
+
+img_in =  'Data/0001_s.png';
+[horizon2, VPs2] = detect_vps(img_in, folder_out, manhattan, acceleration, focal_ratio, params);
+
+A = [triangulate(VPs(:,1), VPs2(:,1), Pproj(1:3,:), Pproj(4:6,:), [w h])';
+    triangulate(VPs(:,2), VPs2(:,2), Pproj(1:3,:), Pproj(4:6,:), [w h])';
+    triangulate(VPs(:,3), VPs2(:,3), Pproj(1:3,:), Pproj(4:6,:), [w h])'];
+
+p = null(A);
+p = p / p(end);
+
+Hp = eye(4,4);
+Hp(end,:) = transpose(p);
 
 %% Visualize the result
 
